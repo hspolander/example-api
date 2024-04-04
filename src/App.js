@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React from "react";
 
-function App() {
+const App = () => {
+  const [data, setData] = React.useState(null);
+
+  React.useEffect(() => {
+    fetch(
+      "https://api.nasa.gov/planetary/apod?api_key=TkuLoCKaR3FWIeqjZP9i5yyiLpPFPKyvjApcPm75"
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((response) => {
+        setData(response);
+      });
+  }, []);
+
+  console.log(data);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        {data ? (
+          <>
+            <img src={data.hdurl} className="apod-img" alt="Apod" />
+            <h3>{data.title}</h3>
+            <p>{data.explanation}</p>
+          </>
+        ) : (
+          <p>Loading</p>
+        )}
       </header>
     </div>
   );
-}
+};
 
 export default App;
